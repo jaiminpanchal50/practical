@@ -26,3 +26,8 @@ dist-ssr
 # Environment variables
 .env
 .env.*.local
+
+
+db/*.sqlite
+db/*.sqlite-shm
+db/*.sqlite-wal
