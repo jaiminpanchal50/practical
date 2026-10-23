@@ -1,19 +1,11 @@
 import { Router } from "express";
+import { registerValidator, loginValidator } from "../validator/auth.validator.js";
+import { login, register } from "../controllers/auth.controller.js";
 
 const authRouter = Router();
 
-authRouter.post("/register", (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "user registered",
-  });
-});
+authRouter.post("/register", registerValidator, register);
 
-authRouter.post("/login", (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "user logged in",
-  });
-});
+authRouter.post("/login", loginValidator, login);
 
 export default authRouter;
