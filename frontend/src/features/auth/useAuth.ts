@@ -22,7 +22,7 @@ const useAuth = () => {
             dispatch(setLoading(false))
         }
 
-    }, [])
+    }, [dispatch])
 
     const registerHandler = useCallback(async (data: any) => {
         try {
@@ -38,13 +38,13 @@ const useAuth = () => {
             dispatch(setLoading(false))
         }
 
-    }, [])
+    }, [dispatch])
 
     const getMeHandler = useCallback(async () => {
         try {
             dispatch(setLoading(true))
             const res = await getMe();
-            dispatch(setUser(res))
+            dispatch(setUser(res?.user))
             return res;
         } catch (err) {
             console.log("getMeHandler error", err)
@@ -54,7 +54,7 @@ const useAuth = () => {
             dispatch(setLoading(false))
         }
 
-    }, [])
+    }, [dispatch])
 
 
     return { loginHandler, registerHandler, getMeHandler }

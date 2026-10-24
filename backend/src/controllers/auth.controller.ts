@@ -52,6 +52,11 @@ export async function register(req: Request, res: Response, next: NextFunction) 
         return res.status(201).json({
             success: true,
             message: "User registered successfully",
+            user: {
+                id: result.lastInsertRowid,
+                name: name,
+                email: email,
+            },
         });
     } catch (error) {
         next(error);
@@ -112,7 +117,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
 export async function getMe(req: Request, res: Response, next: NextFunction) {
     try {
-       return res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "User fetched successfully",
             user: req.user,
