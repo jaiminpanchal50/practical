@@ -49,7 +49,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: "User registered successfully",
         });
@@ -95,7 +95,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Login successful",
             user: {
@@ -103,6 +103,19 @@ export async function login(req: Request, res: Response, next: NextFunction) {
                 name: user.name,
                 email: user.email,
             },
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export async function getMe(req: Request, res: Response, next: NextFunction) {
+    try {
+       return res.status(200).json({
+            success: true,
+            message: "User fetched successfully",
+            user: req.user,
         });
     } catch (error) {
         next(error);
