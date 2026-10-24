@@ -31,3 +31,9 @@ export const updateLeadValidator = [
     body("status").isString().withMessage("Status is required").isIn(validStatuses).withMessage("Invalid lead status"),
     validate,
 ];
+
+
+export const noteValidator = [
+    body("content").isString().withMessage("Content is required").trim().notEmpty().withMessage("Content is required"),
+    validate,
+];

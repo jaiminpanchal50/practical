@@ -130,8 +130,8 @@ export function getLead(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export function updateLead(    req: Request,    res: Response,    next: NextFunction) {
-        try {
+export function updateLead(req: Request, res: Response, next: NextFunction) {
+    try {
         const id = parseLeadId(req.params.id as string);
         const status = req.body.status as LeadStatus;
 
@@ -195,5 +195,82 @@ export function deleteLead(req: Request, res: Response, next: NextFunction) {
         });
     } catch (error) {
         return next(error);
+    }
+}
+
+
+
+// notes controllers
+
+export function getAllNote(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = parseLeadId(req.params.id as string);
+
+        if (id === null) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid lead ID",
+            });
+        }
+
+
+        const isValidLeadId = db.prepare(`SELECT id FROM leads WHERE id = ?`).get(id);
+
+        if (!isValidLeadId) {
+            return res.status(404).json({
+                success: false,
+                message: "Lead not found",
+            });
+        }
+
+        const notes = db.prepare(`SELECT * FROM notes WHERE leadId = ?`).all(id) as any[];
+        console.log(notes);
+
+        return res.status(200).json({
+            success: true,
+            message: "Notes fetched successfully",
+            notes,
+        });
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export function createNote(req: Request, res: Response, next: NextFunction) {
+    try {
+        const leadId = parseLeadId(req.params.id as string);
+        const { content } = req.body;
+
+        if (leadId === null) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid lead ID",
+            });
+        }
+
+        const isValidLeadId = db.prepare(`SELECT id FROM leads WHERE id = ?`).get(leadId);
+
+        if (!isValidLeadId) {
+            return res.status(404).json({
+                success: false,
+                message: "Lead not found",
+            });
+        }
+
+        const normalizedContent = content.trim();
+
+
+        const result = db.prepare(` INSERT INTO notes (content, leadId) VALUES (?, ?) `).run(normalizedContent, leadId);
+
+        const note = db.prepare(`SELECT id, content, leadId, createdAt FROM notes WHERE id = ?`).get(Number(result.lastInsertRowid)) as any;
+
+        return res.status(201).json({
+            success: true,
+            message: "Note created successfully",
+            note,
+        });
+    } catch (error) {
+        next(error)
     }
 }
